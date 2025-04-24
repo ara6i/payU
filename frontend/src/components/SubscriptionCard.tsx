@@ -27,7 +27,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           .split("T")[0], // End date as one year from today
       });
 
-      await axios.post(
+      const response = await axios.post(
         "http://localhost:4000/create-subscription",
         {
           amount: price,
@@ -45,8 +45,13 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
       alert("Subscription created successfully!");
     } catch (error) {
-      console.error("Error creating subscription:", error);
-      alert("Failed to create subscription. Please try again.");
+      if (axios.isAxiosError(error)) {
+        console.error("Error creating subscription:", error.response?.data);
+        alert(`Failed to create subscription: ${error.response?.data?.message || error.message}`);
+      } else {
+        console.error("Error creating subscription:", error);
+        alert("Failed to create subscription. Please try again.");
+      }
     }
   };
 
