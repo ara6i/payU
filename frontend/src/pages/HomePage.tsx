@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { Product } from "../types";
-import { products } from '../data/products';
-import { useBuyNowHandler } from '../hooks/useBuyNowHandler';
-import ProductCard from '../components/ProductCard';
+import { products } from "../data/products";
+import { useBuyNowHandler } from "../hooks/useBuyNowHandler";
+import ProductCard from "../components/ProductCard";
+import SubscriptionCard from "../components/SubscriptionCard";
 
 const HomePage: React.FC = () => {
   const { form, BuyNowHandler } = useBuyNowHandler();
@@ -36,8 +37,13 @@ const HomePage: React.FC = () => {
         <div className="container px-5 py-24 mx-auto">
           <div className="flex flex-wrap -m-4">
             {products.map((product, index) => (
-              <ProductCard key={index} product={product} onBuyNow={handleBuyNowClick} />
+              <ProductCard
+                key={index}
+                product={product}
+                onBuyNow={handleBuyNowClick}
+              />
             ))}
+            <SubscriptionCard />
           </div>
         </div>
       </section>

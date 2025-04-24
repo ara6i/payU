@@ -4,9 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import paymentRoutes from './routes/paymentRoutes';
 
-dotenv.config({
-  path: './.env'
-});
+
 
 const app = express();
 const port = process.env.PORT || 4500;
