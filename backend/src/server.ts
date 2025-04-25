@@ -7,7 +7,7 @@ import paymentRoutes from './routes/paymentRoutes';
 
 
 const app = express();
-const port = process.env.PORT || 4500;
+const port = 4000;
 
 // middleware
 app.use(express.json());

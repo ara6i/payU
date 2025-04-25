@@ -1,13 +1,17 @@
-import PayU from 'payu-websdk';
+import PayU from "payu-websdk";
 
-const payu_key: string = process.env.MERCHANT_KEY || '';
-const payu_salt: string = process.env.MERCHANT_SALT || '';
+export const payu_key: string = "mPs1j7";
+export const payu_salt: string = "hVdYQjtvgH9SjwnsooMXnH3oxKCQr8yO";
+export const payu_environment: string = "PROD";
 
 // create a client
-const payuClient = new PayU({
-  key: payu_key,
-  salt: payu_salt
-}, process.env.PAYU_ENVIRONMENT);
+const payuClient = new PayU(
+  {
+    key: payu_key,
+    salt: payu_salt,
+  },
+  payu_environment
+);
 
 interface PayData {
   payuClient: PayU;
@@ -18,5 +22,5 @@ interface PayData {
 export const PayData: PayData = {
   payuClient,
   payu_key,
-  payu_salt
-}; 
+  payu_salt,
+};

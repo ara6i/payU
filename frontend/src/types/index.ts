@@ -18,12 +18,11 @@ export interface Product {
  * Payment form data interface for initiating payments
  */
 export interface PaymentFormData {
-  firstName: string;
-  lastName: string;
+  amount: number;
+  productinfo: string;
+  firstname: string;
   email: string;
   phone: string;
-  amount: number;
-  productInfo: string;
 }
 
 /**
@@ -32,9 +31,8 @@ export interface PaymentFormData {
 export interface PaymentResponse {
   txnid: string;
   amount: number;
-  productInfo: string;
-  firstName: string;
-  lastName: string;
+  productinfo: string;
+  firstname: string;
   email: string;
   phone: string;
   surl: string;

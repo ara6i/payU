@@ -1,21 +1,27 @@
 import React, { useEffect } from "react";
-import { Product } from "../types";
 import { products } from "../data/products";
 import { useBuyNowHandler } from "../hooks/useBuyNowHandler";
 import ProductCard from "../components/ProductCard";
-import SubscriptionCard from "../components/SubscriptionCard";
+import SubscriptionOptions from "../components/SubscriptionCard";
+
+interface Product {
+  id: number | string;
+  title: string;
+  price: number;
+  description?: string;
+  image?: string;
+}
 
 const HomePage: React.FC = () => {
-  const { form, BuyNowHandler } = useBuyNowHandler();
+  const { form, BuyNowHandler, subscription } = useBuyNowHandler();
 
   const handleBuyNowClick = (product: Product) => {
     BuyNowHandler({
       amount: product.price,
-      productInfo: product.title,
-      firstName: "Arash",
-      lastName: "User",
+      productinfo: product.title,
+      firstname: "Arash",
       email: `ara6i.sn@gmail.com`,
-      phone: `11111111`,
+      phone: `9876543210`,
     });
   };
 
@@ -43,7 +49,7 @@ const HomePage: React.FC = () => {
                 onBuyNow={handleBuyNowClick}
               />
             ))}
-            <SubscriptionCard />
+            <SubscriptionOptions subscriptionHandler={subscription} />
           </div>
         </div>
       </section>
