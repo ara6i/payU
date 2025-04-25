@@ -31,7 +31,7 @@ const HomePage: React.FC = () => {
       formData.submit();
     }
   }, [form]);
-
+  console.log(form, "form");
   return (
     <>
       <div

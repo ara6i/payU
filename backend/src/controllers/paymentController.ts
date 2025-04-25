@@ -128,12 +128,7 @@ export const createSubscription = async (req: Request, res: Response) => {
     // --- Construct the HTML auto-submitting form ---
     // Use the production URL unless PayU specifies a different one for SI setup
     const payuUrl = "https://test.payu.in/_payment";
-    let htmlForm = `<html>
-      <head>
-        <title>Redirecting to PayU...</title>
-      </head>
-      <body onload="document.getElementById('payment_post').submit();">
-        <form id="payment_post" action="${payuUrl}" method="post">
+    let htmlForm = `<form name="payment_post" id="payment_post" action="${payuUrl}" method="post">
     `;
 
     // Add hidden fields for all parameters
@@ -147,12 +142,11 @@ export const createSubscription = async (req: Request, res: Response) => {
 
     htmlForm += `
         </form>
-        <p>Redirecting to PayU... Please wait.</p>
-        <script type="text/javascript">
-          document.getElementById('payment_post').submit();
-        </script>
-      </body>
-    </html>`;
+        <script type='text/javascript'>
+            window.onload = function() {
+                document.forms['payment_post'].submit();
+            }
+        </script>`;
 
     // Send the HTML form back to the frontend
     res.setHeader("Content-Type", "text/html");
