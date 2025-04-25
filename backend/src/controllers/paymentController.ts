@@ -26,13 +26,7 @@ export const initiatePayment = async (
     const si_details = {}; // Empty si_details for regular payments
 
     // Calculate hash using PayU's formula
-    const hashString = `${
-      PayData.payu_key
-    }|${txn_id}|${amount}|${JSON.stringify(
-      productinfo
-    )}|${firstname}|${email}|${udf1}|${udf2}|${udf3}|${udf4}|${udf5}||||||${JSON.stringify(
-      si_details
-    )}|${PayData.payu_salt}`;
+    const hashString = `${PayData.payu_key}|${txn_id}|${amount}|${productinfo}|${firstname}|${email}|||||||||||${PayData.payu_salt}`;
     const hash = crypto.createHash("sha512").update(hashString).digest("hex");
 
     const data = await PayData.payuClient.paymentInitiate({
@@ -133,7 +127,7 @@ export const createSubscription = async (req: Request, res: Response) => {
 
     // --- Construct the HTML auto-submitting form ---
     // Use the production URL unless PayU specifies a different one for SI setup
-    const payuUrl = "https://secure.payu.in/_payment";
+    const payuUrl = "https://test.payu.in/_payment";
     let htmlForm = `<html>
       <head>
         <title>Redirecting to PayU...</title>
