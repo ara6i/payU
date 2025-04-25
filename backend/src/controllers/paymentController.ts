@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { PayData } from "../config/payu.config";
+import { PayData, payu_key, payu_salt } from "../config/payu.config";
 import crypto from "crypto";
 
 interface PaymentRequest {
@@ -84,8 +84,8 @@ export const createSubscription = async (req: Request, res: Response) => {
     const formattedSiDetails = JSON.stringify({
       billingAmount: formattedAmount,
       billingCurrency: "INR",
-      billingCycle: si_details.billingCycle,
-      billingInterval: si_details.billingInterval,
+      billingCycle: String(si_details.billingCycle),
+      billingInterval: String(si_details.billingInterval),
       paymentStartDate: si_details.paymentStartDate,
       paymentEndDate: si_details.paymentEndDate,
     });
@@ -114,26 +114,26 @@ export const createSubscription = async (req: Request, res: Response) => {
 
     // Create form data parameters object
     const params = {
-        key: PayData.payu_key,
-        txnid: txn_id,
-        amount: formattedAmount,
-        firstname: firstname,
-        email: email,
-        phone: formattedPhone,
-        productinfo: productinfo,
-        si: "1",
-        api_version: "7",
-        surl: `http://localhost:4000/verify/${txn_id}`,
-        furl: `http://localhost:4000/verify/${txn_id}`,
-        si_details: formattedSiDetails,
-        hash: hash
+      key: PayData.payu_key,
+      txnid: txn_id,
+      amount: formattedAmount,
+      firstname: firstname,
+      email: email,
+      phone: formattedPhone,
+      productinfo: productinfo,
+      si: "1",
+      api_version: "7",
+      surl: `http://localhost:4000/verify/${txn_id}`,
+      furl: `http://localhost:4000/verify/${txn_id}`,
+      si_details: formattedSiDetails,
+      hash: hash,
     };
 
     console.log("Form Params:", params);
 
-    // --- Construct the HTML auto-submitting form --- 
+    // --- Construct the HTML auto-submitting form ---
     // Use the production URL unless PayU specifies a different one for SI setup
-    const payuUrl = "https://secure.payu.in/_payment"; 
+    const payuUrl = "https://secure.payu.in/_payment";
     let htmlForm = `<html>
       <head>
         <title>Redirecting to PayU...</title>
@@ -144,9 +144,11 @@ export const createSubscription = async (req: Request, res: Response) => {
 
     // Add hidden fields for all parameters
     for (const key in params) {
-        if (params.hasOwnProperty(key)) {
-            htmlForm += `<input type="hidden" name="${key}" value="${params[key as keyof typeof params].replace(/"/g, '&quot;')}" />\n`;
-        }
+      if (params.hasOwnProperty(key)) {
+        htmlForm += `<input type="hidden" name="${key}" value="${params[
+          key as keyof typeof params
+        ].replace(/"/g, "&quot;")}" />\n`;
+      }
     }
 
     htmlForm += `
@@ -159,9 +161,8 @@ export const createSubscription = async (req: Request, res: Response) => {
     </html>`;
 
     // Send the HTML form back to the frontend
-    res.setHeader('Content-Type', 'text/html');
+    res.setHeader("Content-Type", "text/html");
     res.send(htmlForm);
-
   } catch (error: any) {
     console.error("Error creating subscription:", error);
     res.status(500).json({
