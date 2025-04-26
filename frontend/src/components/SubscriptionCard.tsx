@@ -1,73 +1,64 @@
 import React from "react";
-import axios from "axios";
+import { useRazorpaySubscription } from "../hooks/useRazorpaySubscription";
 
-// Define SubscriptionFormData locally if types.ts is deleted
-interface SubscriptionFormData {
-  amount: number | string;
-  productinfo: string;
-  firstname: string;
-  email: string;
-  phone: string | number;
-  si_details: {
-    billingAmount: string;
-    billingCurrency: string;
-    billingCycle: string;
-    billingInterval: number;
-    paymentStartDate: string;
-    paymentEndDate: string;
+interface RazorpaySubscriptionData {
+  amount: number;
+  currency: string;
+  period: string;
+  interval: number;
+  customer: {
+    name: string;
+    email: string;
+    contact: string;
   };
-  api_version: string;
-  si: string;
+  notes?: {
+    [key: string]: string | undefined;
+  };
 }
 
-// Prop type for the individual card
 interface SubscriptionCardProps {
   planName: string;
   price: number;
   billingCycle: string;
-  // Expect the handler function from the hook
-  subscriptionHandler: (data: SubscriptionFormData) => Promise<void>;
+  planId: string;
 }
 
 const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   planName,
   price,
   billingCycle,
-  subscriptionHandler, // Destructure the handler
+  planId,
 }) => {
+  const { createSubscription, loading, error } = useRazorpaySubscription();
 
   const handleSubscribe = async () => {
-    // Format data for the hook function
-    const formattedAmount = price.toFixed(2);
-    const payload: SubscriptionFormData = {
-        amount: formattedAmount,
-        firstname: "PayU User", // Make dynamic if needed
-        email: "ara6i.sn@gmail.com", // Make dynamic if needed
-        phone: "9876543210", // Make dynamic if needed
-        productinfo: `Subscription for ${planName} - ${billingCycle}`,
-        si_details: {
-            billingAmount: formattedAmount,
-            billingCurrency: "INR",
-            billingCycle: billingCycle.toUpperCase(),
-            billingInterval: 1,
-            paymentStartDate: new Date().toISOString().split("T")[0],
-            paymentEndDate: new Date(
-              new Date().setFullYear(new Date().getFullYear() + 1)
-            ).toISOString().split("T")[0],
-        },
-        api_version: "7",
-        si: "1",
+    const payload: RazorpaySubscriptionData = {
+      amount: price * 100, // Razorpay expects amount in paise
+      currency: "INR",
+      period: billingCycle,
+      interval: 1,
+      customer: {
+        name: "Test User",
+        email: "test@example.com",
+        contact: "9876543210",
+      },
+      notes: {
+        planName: planName,
+        billingCycle: billingCycle,
+        planId: planId,
+      },
     };
 
-    // Call the handler passed from the hook
-    await subscriptionHandler(payload);
-
-    // Error handling is now done within the hook
+    try {
+      await createSubscription(payload);
+    } catch (error) {
+      console.error("Subscription error:", error);
+    }
   };
 
   return (
     <>
-      <div className="p-4 md:w-1/3">
+      <div className="p-4 md:w-1/2">
         <div className="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
           <div className="p-6">
             <h1 className="title-font text-lg font-medium text-gray-900 mb-3">
@@ -78,11 +69,15 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
             </p>
             <div className="mb-3">
               <button
-                onClick={handleSubscribe} // Calls the function above
-                className="px-4 py-2 bg-blue-500 text-white rounded-md shadow"
+                onClick={handleSubscribe}
+                disabled={loading}
+                className={`px-4 py-2 bg-blue-500 text-white rounded-md shadow hover:bg-blue-600 transition-colors ${
+                  loading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               >
-                Subscribe for ${price}
+                {loading ? "Processing..." : `Subscribe for ₹${price}`}
               </button>
+              {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
             </div>
           </div>
         </div>
@@ -91,33 +86,22 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   );
 };
 
-// --- SubscriptionOptions Component --- 
+// --- SubscriptionOptions Component ---
 
-// Prop type for the options wrapper
-interface SubscriptionOptionsProps {
-  subscriptionHandler: (data: SubscriptionFormData) => Promise<void>;
-}
-
-const SubscriptionOptions: React.FC<SubscriptionOptionsProps> = ({ subscriptionHandler }) => {
+const SubscriptionOptions: React.FC = () => {
   return (
     <div className="flex flex-wrap">
       <SubscriptionCard
         planName="Basic Plan"
-        price={100}
+        price={999}
         billingCycle="monthly"
-        subscriptionHandler={subscriptionHandler} // Pass down the prop
-      />
-      <SubscriptionCard
-        planName="Standard Plan"
-        price={250}
-        billingCycle="weekly"
-        subscriptionHandler={subscriptionHandler} // Pass down the prop
+        planId="plan_QNhURoGgIKf7UY"
       />
       <SubscriptionCard
         planName="Premium Plan"
-        price={900}
-        billingCycle="yearly"
-        subscriptionHandler={subscriptionHandler} // Pass down the prop
+        price={2499}
+        billingCycle="monthly"
+        planId="plan_QNhUi7ZQsFERZI"
       />
     </div>
   );

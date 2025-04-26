@@ -2,6 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import HomePage from "./pages/HomePage";
 import StatusPage from "./pages/StatusPage";
+import SubscriptionSuccess from "./pages/SubscriptionSuccess";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -14,6 +16,10 @@ export const router = createBrowserRouter([
       {
         path: "payment/:status/:id",
         Component: StatusPage,
+      },
+      {
+        path: "subscription/success",
+        Component: SubscriptionSuccess,
       },
     ],
   },

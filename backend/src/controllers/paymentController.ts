@@ -115,7 +115,7 @@ export const createSubscription = async (req: Request, res: Response) => {
       email: email,
       phone: formattedPhone,
       productinfo: productinfo,
-      si: "1",
+      si: "4",
       api_version: "7",
       surl: `http://localhost:4000/verify/${txn_id}`,
       furl: `http://localhost:4000/verify/${txn_id}`,

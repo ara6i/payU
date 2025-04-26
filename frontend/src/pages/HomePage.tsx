@@ -49,7 +49,7 @@ const HomePage: React.FC = () => {
                 onBuyNow={handleBuyNowClick}
               />
             ))}
-            <SubscriptionOptions subscriptionHandler={subscription} />
+            <SubscriptionOptions />
           </div>
         </div>
       </section>

@@ -1,170 +1,104 @@
-# PayU Money Payment Gateway Integration
+# Razorpay Subscription Integration
 
-A full-stack TypeScript application demonstrating the integration of PayU Money payment gateway with a Node.js backend and React frontend.
+This project demonstrates how to integrate Razorpay subscriptions into a React application with a Node.js backend.
 
-## Project Overview
+## Features
 
-This project showcases how to integrate PayU Money payment gateway into a modern web application. It includes:
+- Create and manage Razorpay subscriptions
+- Process payments securely
+- Verify payment signatures
+- Display subscription details
 
-- **Backend**: Node.js with Express and TypeScript
-- **Frontend**: React with TypeScript and Tailwind CSS
-- **Payment Gateway**: PayU Money integration for processing payments
+## Setup
 
-## Project Structure
+1. Clone the repository
+2. Install dependencies:
+   ```
+   # Install backend dependencies
+   cd backend
+   npm install
 
-```
-.
-├── backend/             # TypeScript Node.js backend
-│   ├── src/            # Source files
-│   ├── dist/           # Compiled files
-│   ├── node_modules/   # Node.js modules
-│   ├── package.json
-│   ├── package-lock.json
-│   ├── tsconfig.json
-│   ├── .env            # Environment variables
-│   └── .env.example    # Example environment variables
-├── frontend/           # TypeScript React frontend
-│   ├── src/            # Source files
-│   ├── node_modules/   # Node.js modules
-│   ├── package.json
-│   ├── package-lock.json
-│   └── tsconfig.json
-└── README.md
-```
+   # Install frontend dependencies
+   cd ../frontend
+   npm install
+   ```
 
-## Prerequisites
+3. Start the backend server:
+   ```
+   cd backend
+   npm run dev
+   ```
 
-- Node.js (v14 or higher)
-- npm or yarn
-- PayU Money merchant account
+4. Start the frontend development server:
+   ```
+   cd frontend
+   npm run dev
+   ```
 
-## Environment Setup
+## Testing Payments in Test Mode
 
-### Backend Environment Variables
+Razorpay provides a test mode that allows you to test the payment flow without making actual charges. Here's how to test payments:
 
-Create a `.env` file in the backend directory:
+### Test Card Details
 
-```
-MERCHANT_KEY=<YOUR MERCHANT KEY>
-MERCHANT_SALT=<YOUR MERCHANT SALT>
-PAYU_ENVIRONMENT=TEST
-PORT=4000
-```
+Use these test card details when making a payment:
 
-## Installation
+| Card Number | Expiry | CVV | Name | 3D Secure Password |
+|-------------|--------|-----|------|-------------------|
+| 4111 1111 1111 1111 | Any future date | Any 3 digits | Any name | 1221 |
+| 5267 3181 8797 5449 | Any future date | Any 3 digits | Any name | 1221 |
 
-### Backend Setup
+### Test UPI Details
 
-```bash
-cd backend
-npm install
-```
+For UPI payments, use these test UPI IDs:
+- `success@razorpay` - Successful payment
+- `failure@razorpay` - Failed payment
 
-### Frontend Setup
+### Test Netbanking Details
 
-```bash
-cd frontend
-npm install
-```
+For netbanking, select any bank and use these credentials:
+- Username: `razorpay`
+- Password: `razorpay`
 
-## Development
+### Testing Subscription Flow
 
-### Running the Backend
+1. Select a subscription plan on the homepage
+2. Click "Subscribe" to initiate the payment
+3. In the Razorpay checkout popup, use the test card details above
+4. For 3D Secure authentication, use the password: `1221`
+5. After successful payment, you'll be redirected to the success page
 
-```bash
-cd backend
-npm run dev
-```
+### Common Test Scenarios
 
-The backend server will start at `http://localhost:4000`.
+1. **Successful Payment**: Use card number `4111 1111 1111 1111`
+2. **Failed Payment**: Use card number `4917 6100 0000 0000`
+3. **Card Declined**: Use card number `4917 6100 0000 0000` with CVV `911`
+4. **Insufficient Funds**: Use card number `4917 6100 0000 0000` with CVV `911`
 
-### Running the Frontend
+## Production Deployment
 
-```bash
-cd frontend
-npm run dev
-```
+When moving to production:
 
-The frontend development server will start at `http://localhost:5173`.
+1. Replace the test API keys with your live Razorpay API keys
+2. Update the webhook URL to your production domain
+3. Implement proper error handling and logging
+4. Add user authentication to protect subscription data
 
-## Building for Production
+## Troubleshooting
 
-### Backend Build
+If you encounter issues:
 
-```bash
-cd backend
-npm run build
-```
+1. Check the browser console for errors
+2. Verify that the backend server is running
+3. Ensure you're using the correct API keys
+4. Check the Razorpay dashboard for payment status
 
-### Frontend Build
+## Resources
 
-```bash
-cd frontend
-npm run build
-```
-
-## API Documentation
-
-### Payment Initiation
-
-**Endpoint**: `POST /get-payment`
-
-**Request Body**:
-```typescript
-{
-  amount: number;
-  productInfo: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-}
-```
-
-**Response**: HTML form for PayU payment gateway
-
-### Payment Verification
-
-**Endpoint**: `POST /verify/:txnid`
-
-**Parameters**:
-- `txnid`: Transaction ID
-
-**Response**: Redirects to frontend with payment status
-
-## Frontend Routes
-
-- `/`: Home page with product listing
-- `/payment/:status/:id`: Payment status page
-
-## TypeScript Implementation
-
-### Backend TypeScript
-
-The backend uses TypeScript for type safety and better developer experience:
-
-- Custom type definitions for PayU SDK
-- Type-safe request/response handling
-- Proper error typing
-
-### Frontend TypeScript
-
-The frontend leverages TypeScript for:
-
-- Component props typing
-- API response typing
-- Route parameter typing
-
-## Payment Flow
-
-1. User selects a product and clicks "Buy"
-2. Frontend sends payment request to backend
-3. Backend generates transaction ID and hash
-4. Backend initiates payment with PayU
-5. User completes payment on PayU gateway
-6. PayU redirects to backend verification endpoint
-7. Backend verifies payment and redirects to frontend status page
-8. Frontend displays payment status
+- [Razorpay Documentation](https://razorpay.com/docs/)
+- [Razorpay Test Mode Guide](https://razorpay.com/docs/payments/payments/test-card-details/)
+- [React Documentation](https://reactjs.org/docs/getting-started.html)
+- [Node.js Documentation](https://nodejs.org/en/docs/)
 
 
 

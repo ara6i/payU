@@ -3,8 +3,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import paymentRoutes from './routes/paymentRoutes';
-
-
+import razorpayRoutes from './routes/razorpayRoutes';
 
 const app = express();
 const port = 4000;
@@ -16,6 +15,7 @@ app.use(cors());
 
 // routes
 app.use('/', paymentRoutes);
+app.use('/razorpay', razorpayRoutes);
 
 // run the application
 app.listen(port, () => {
